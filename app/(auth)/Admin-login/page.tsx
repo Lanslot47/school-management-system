@@ -1,5 +1,42 @@
+"use client"
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+const router = useRouter()
 const Page = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const handleLogin = async () => {
+        setLoading(true)
+        setError('')
+
+        try {
+            const res = await fetch("https://localhost:5000/api/users/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            },
+
+            )
+            const data = await res.json()
+            if (!data.ok) {
+                throw new Error(data.error || "Invalid")
+            }
+            localStorage.setItem('adminToken', data.token)
+            router.push('/admin')
+        }
+        catch (err: any) {
+            setError(err.message || "something went wrong")
+        } finally {
+            setLoading(false)
+        }
+
+    }
+
     return (
         <div className="px-14 py-10" >
             <form className="w-full">
@@ -21,7 +58,7 @@ const Page = () => {
                         <input
                             type="email"
                             placeholder="example@gmail.com"
-                            className="border border-gray-300 px-3 py-3 rounded outline-0"
+                            className="border border-gray-300 px-3 py-3 rounded outline-0" onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
@@ -30,7 +67,7 @@ const Page = () => {
                         <input
                             type="password"
                             placeholder="********"
-                            className="border border-gray-300 px-3 py-3 rounded outline-0"
+                            className="border border-gray-300 px-3 py-3 rounded outline-0" onChange={(e) => setPassword(e.target.value)}
                         />
                         <p className="text-end text-sm text-green-500 cursor-pointer">forgot password?</p>
                     </div>

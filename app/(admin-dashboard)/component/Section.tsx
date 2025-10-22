@@ -1,11 +1,11 @@
 const Section = () => {
     return (
-        <section className="w-[79.2vw] p-1">
-            <div className="w-[98%] p-5 h-18 bg-white flex justify-between items-center rounded mb-10">
-                <h1 className="text-green-600 font-semibold text-xl">Admin Dashboard</h1>
+        <section className="md:w-full p-1 md:h-full overflow-x-hidden">
+            <div className="w-full p-5 h-18 bg-white flex justify-between items-center rounded mb-10">
+                <h1 className="text-green-600 font-semibold md:text-md">Admin Dashboard</h1>
                 <p className="text-gray-400">Logged in as admin@example.com</p>
             </div>
-            <div className="p-7 flex justify-between">
+            <div className="p-7 md:flex md:justify-between grid gap-10">
                 <button className="h-24 w-74 bg-white border border-l-7 border-l-green-600 text-start p-4 border-gray-300 rounded-xl">
                     <p className="">Number of Student</p>
                     <p className="font-bold text-2xl">0</p>

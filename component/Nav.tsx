@@ -12,7 +12,7 @@ const Nav = () => {
     ]
 
     return (
-        <nav className="flex justify-between items-center w-full px-8 py-5 shadow-md fixes top-0 z-50 bg-white ">
+        <nav className="flex justify-between items-center w-full px-8 py-5 shadow-md fixed top-0 z-50 bg-white">
             <div className="flex-1">
                 <Link className="font-bold text-md md:text-2xl" href='/'><h1>ZIT</h1></Link>
             </div>

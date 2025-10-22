@@ -1,11 +1,14 @@
+"use client"
+
 import Link from "next/link";
 import { LayoutDashboard } from "lucide-react";
-import { PictureInPicture } from "lucide-react";
 import { PlusIcon } from "lucide-react";
 import { SheetIcon } from "lucide-react";
 import { PlusSquareIcon } from "lucide-react";
 import { UserIcon } from "lucide-react";
-const SideBar = () => {
+import { useState } from "react";
+const SideBar = ({ children }: { children?: React.ReactNode }) => {
+    const [open, setOpen] = useState(false);
     const list = [
         { id: 1, title: 'Dashboard', url: '/admin', icon: <LayoutDashboard /> },
         { id: 2, title: 'Profile', url: 'admin/profile', icon: <UserIcon /> },
@@ -14,20 +17,47 @@ const SideBar = () => {
         { id: 5, title: 'Add Staff', url: 'admin/addStaff', icon: <PlusSquareIcon /> }
     ]
     return (
-        <div className=" h-screen w-64 bg-gradient-to-b via-white to-green-200 rounded-r-xl shadow-xl p-6">
-            <h1 className="text-2xl font-extrabold text-green-600 text-center mb-4">Zit</h1>
-            <div className="hidden md:flex flex-col space-y-2">
-                {
-                    list.map((item) => (
+        <div className="flex h-screen overflow-hidden">
+            <aside
+                className={`fixed lg:static top-0 left-0 h-full w-56 bg-gradient-to-b from-white via-white to-green-200 shadow-xl p-6 rounded-r-xl transform transition-transform duration-300 z-40
+          ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+            >
+                <h1 className="text-2xl font-extrabold text-green-600 text-center mb-6">
+                    Zit
+                </h1>
 
-                        <Link key={item.id} href={item.url} className="flex items-center px-4 py-3 gap-4 rounded-lg  hover:text-white hover:bg-green-600 duration-200 transition-all ease-in-out">
-                            <span className="font-medium text-sm flex items-center gap-3" >
-                                <p>{item.icon}</p>
-                                {item.title}
-                            </span>
+                <nav className="flex flex-col space-y-2">
+                    {list.map((item) => (
+                        <Link
+                            key={item.id}
+                            href={item.url}
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-600 hover:text-white transition"
+                            onClick={() => setOpen(false)}
+                        >
+                            {item.icon}
+                            <span className="font-medium text-sm">{item.title}</span>
                         </Link>
-                    ))
-                }
+                    ))}
+                </nav>
+            </aside>
+
+            {open && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"
+                    onClick={() => setOpen(false)}
+                />
+            )}
+            <div className="flex-1 flex flex-col overflow-y-auto">
+                <header className="lg:hidden p-4">
+                    <button
+                        onClick={() => setOpen(!open)}
+                        className="p-2 rounded bg-green-600 text-white"
+                    >
+                        {open ? "✕" : "☰"}
+                    </button>
+                </header>
+
+                <main className="p-4">{children}</main>
             </div>
         </div>
 

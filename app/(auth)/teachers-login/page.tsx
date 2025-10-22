@@ -1,8 +1,47 @@
+"use client"
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 const Page = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoading(true)
+        setError('')
+
+        try {
+            const res = await fetch('http://localhost:5000/api/teacher/login', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+
+            const data = await res.json()
+            if (!res.ok) {
+                throw new Error(data.error || "Invalid")
+            }
+            localStorage.setItem('adminToken', data.token)
+            console.log('worked successfully')
+            router.push('/admin')
+        }
+        catch (err: any) {
+            setError(err.message || "something went wrong")
+            
+        } finally {
+            setLoading(false)
+        }
+    }
+
+
     return (
         <div className="px-14 py-10" >
-            <form className="w-full">
+            <form className="w-full" onSubmit={handleLogin}>
                 <h1 className="text-center font-semibold text-green-500 text-2xl mb-6">Welcome Back To Teacher' Login</h1>
                 <div className="items-center flex justify-center border-1 h-10 rounded-md bg-gray-50 mb-6">
                     <div className="flex gap-3">
@@ -15,6 +54,9 @@ const Page = () => {
                     <p>Or</p>
                     <div className="h-[1px] bg-black w-65"></div>
                 </div>
+                {
+                    error && <p>{error}</p>
+                }
                 <div className="space-y-4 mb-10">
                     <div className="flex flex-col space-y-1 mb-10">
                         <label htmlFor="email" className="text-sm font-medium">Email</label>
@@ -22,6 +64,7 @@ const Page = () => {
                             type="email"
                             placeholder="example@gmail.com"
                             className="border border-gray-300 px-3 py-3 rounded outline-0"
+                            onChange={(e)=>setEmail(e.target.value)}
                         />
                     </div>
 
@@ -31,12 +74,14 @@ const Page = () => {
                             type="password"
                             placeholder="********"
                             className="border border-gray-300 px-3 py-3 rounded outline-0"
+                            onChange={(e)=>setPassword(e.target.value)}
                         />
                         <p className="text-end text-sm text-green-500 cursor-pointer">forgot password?</p>
                     </div>
                 </div>
                 <button className="text-white font-semibold mb-5 w-full bg-green-500  py-2 rounded px-3 cursor-pointer">Login</button>
                 <p className="text-sm text-center">Don't have an account? <span className="text-green-500 cursor-pointer">SignUp</span></p>
+
             </form>
         </div>
 

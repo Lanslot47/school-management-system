@@ -1,32 +1,36 @@
 "use client"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-const router = useRouter()
+import React, { useState } from "react";
+
 const Page = () => {
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const handleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
         setLoading(true)
         setError('')
 
         try {
-            const res = await fetch("https://localhost:5000/api/users/", {
+            const res = await fetch('http://localhost:5000/api/admin/loginAdmin', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
-            },
+            })
 
-            )
             const data = await res.json()
-            if (!data.ok) {
+            if (!res.ok) {
                 throw new Error(data.error || "Invalid")
             }
-            localStorage.setItem('adminToken', data.token)
+
+            let tok = localStorage.setItem('adminToken', data.token)
+            console.log(tok)
+            console.log('worked successfully')
             router.push('/admin')
         }
         catch (err: any) {
@@ -34,12 +38,11 @@ const Page = () => {
         } finally {
             setLoading(false)
         }
-
     }
 
     return (
         <div className="px-14 py-10" >
-            <form className="w-full">
+            <form className="w-full" onSubmit={handleLogin}>
                 <h1 className="text-center font-semibold text-green-500 text-2xl mb-6">Welcome Back To admin' Login</h1>
                 <div className="items-center flex justify-center border-1 h-10 rounded-md bg-gray-50 mb-6">
                     <div className="flex gap-3">
